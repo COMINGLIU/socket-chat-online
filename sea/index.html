@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div class="box">
+      kckb
+    </div>
+  </body>
+  <!-- <script src="js/sea.js"></script> -->
+  <script src="js/exp1.js"></script>
+  <script type="text/javascript">
+    // seajs.use("./js/module.js",function(dom){
+    //   console.log(dom);
+    //   console.log(dom(".box"));
+    // })
+    exp1("./js/module.js",function(fn){
+      console.log(fn);
+      console.log(fn(".box"));
+    });
+    exp1("./js/module2.js",function(fn){
+      console.log(fn);
+    })
+  </script>
+</html>
