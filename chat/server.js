@@ -1,6 +1,4 @@
 const http = require("http");
-const express = require('express');
-const static = require('express-static');
 const fs = require('fs');
 const ws = require("socket.io");
 
@@ -35,4 +33,4 @@ io.on("connection",function(socket){
     }
   });
 })
-server.listen(8080);
+server.listen(8888);
