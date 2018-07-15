@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <!-- <link rel="stylesheet" href="/index.css"> -->
+  </head>
+  <style media="screen">
+  html,body{
+    width: 100%;
+    font-family: arial;
+  }
+  body,p,ul{
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    list-style: none;
+  }
+  #container {
+    position: relative;
+    width: 600px;
+    height: 500px;
+    margin: 20px auto;
+    background-color: rgb(226,232,249);
+    box-shadow: 0 0 15px #ccc;
+    transition-duration: .3s;
+  }
+  #head {
+    width: 100%;
+    height: 40px;
+    background-color: rgb(141,165,232);
+    line-height: 40px;
+    text-align: center;
+  }
+
+  /* 好友框 */
+  #friends-box {
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 160px;
+    height: 460px;
+    overflow-y: auto;
+  }
+  #friends-box p {
+    font-size: 14px;
+    /* background-color: #ccc; */
+    line-height: 40px;
+    padding-left: 10px;
+  }
+  ul#friend-list{
+    font-size: 13px;
+  }
+  ul#friend-list li {
+    box-sizing: border-box;
+    width: 100%;
+    height: 28px;
+    padding-left: 10px;
+    cursor: default;
+  }
+  ul#friend-list li:hover {
+    background-color: rgb(217,222,239);
+  }
+  ul#friend-list li em {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+  }
+  ul#friend-list li span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 28px;
+    text-indent: 5px;
+  }
+  /* 发送框 */
+  #send-box {
+    position: relative;
+    box-sizing: border-box;
+    width: 440px;
+    height:calc(100% - 40px - 325px);
+    padding-top: 10px;
+    padding-left: 10px;
+    border-right: 1px solid rgba(204,204,204,.5);
+    overflow: hidden;
+  }
+  #send-box textarea {
+    display: block;
+    width: 100%;
+    height: 70%;
+    border: none;
+    outline: none;
+    background-color: rgb(226,232,249);
+    font-size: 12px;
+    font-family: arial;
+    resize: none;
+  }
+  #send-box .function {
+    width: 100%;
+    height: 25%;
+  }
+  .function .look {
+    width: 30px;
+    height: 30px;
+    padding-top: 4px;
+    text-align: center;
+  }
+  .function .look img {
+    width: 24px;
+    height: 24px;
+  }
+  .function .look:hover {
+    background-color: rgb(213,219,235);
+  }
+  #send-box button {
+    width: 70px;
+    height: 28px;
+    border: 0;
+    border-radius: 3px;
+    outline: none;
+    font-size: 12px;
+    text-align: center;
+    line-height: 28px;
+    cursor: pointer;
+  }
+  #send-box button[name="close"] {
+    background-color: rgb(235,239,251);
+    border: 1px solid rgb(182,189,203);
+    margin-right: 10px;
+  }
+  #send-box button[name="close"]:hover {
+    background-color: rgb(239,239,240);
+  }
+  #send-box button[name="send"] {
+    background-color: rgb(141,165,232);
+    border: 1px solid rgb(141,165,232);
+  }
+  #send-box button[name="send"]:hover {
+    background-color: rgb(166,184,237);
+  }
+  .btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+  }
+  /* 聊天记录框 */
+  #record-box {
+    position: relative;
+    box-sizing: border-box;
+    width: 440px;
+    height: 325px;
+    padding: 10px 10px 0 10px;
+    border-bottom: 1px solid rgba(204,204,204,.5);
+    border-right: 1px solid rgba(204,204,204,.5);
+    overflow-y:auto;
+    color:#555;
+    font-size: 12px;
+  }
+  #record-box>div{
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .left-photo {
+    left: 0;
+  }
+  .left-say {
+    margin-left: 40px;
+  }
+  .left-name {
+    margin-left: 40px;
+  }
+  .right-div {
+    text-align: right;
+  }
+  .right-photo {
+    right: 0;
+  }
+  .right-name {
+    margin-right: 40px;
+  }
+  .right-say {
+    margin-right: 40px;
+  }
+  #record-box em.photo {
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 50%;
+  }
+  #record-box span.name {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 10px;
+  }
+  #record-box span.say {
+    box-sizing: border-box;
+    display: inline-block;
+    max-width: 80%;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: rgb(203,208,223);
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+  }
+  #addInfo {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #ccc;
+  }
+  p#agin {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: auto;
+    color: #ccc;
+    font-size: 26px;
+    text-align: center;
+    line-height: 400px;
+  }
+  </style>
+  <body>
+    <p id="agin">刷新重来</p>
+    <div id="container">
+      <div id="head">
+        QPQ群聊
+      </div>
+      <div id="record-box">
+        <div id="addInfo">
+            qpq加入聊天室
+        </div>
+      </div>
+      <div id="friends-box">
+        <p>群成员 <span>10</span></p>
+        <ul id="friend-list">
+          <!-- <li><em></em><span>sjkcnb</span></li> -->
+        </ul>
+      </div>
+      <div id="send-box">
+        <div class="function">
+          <div class="look">
+            <img src="img/Smile.png" alt="smile" width="100%">
+          </div>
+        </div>
+        <textarea rows="8" cols="80"></textarea>
+        <div class="btn">
+          <button type="button" name="close">关闭</button>
+          <button type="button" name="send">发送</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.bootcss.com/socket.io/2.1.1/socket.io.js"></script>
+  <!-- <script src="index.js"></script> -->
+  <script type="text/javascript">
+  // 处理socket
+  (function(window,document){
+    var doc = document;
+    var ele = {
+      oContainer: doc.getElementById("container"),
+      oSendTxt: doc.getElementsByTagName("textarea")[0],
+      oCloseBtn: doc.getElementsByName("close")[0],
+      oSendBtn: doc.getElementsByName("send")[0],
+      oRecord: doc.getElementById("record-box"),
+      oNickName: doc.getElementById("nickName"),
+      oFriendList: doc.getElementById("friend-list"),
+      oFriendList_myPhoto: doc.querySelector("#friend-list li em"),
+      oFriendList_myName: doc.querySelector("#friend-list li span"),
+      oFriendList_num: doc.querySelector("#friends-box span"),
+      aFriends: doc.getElementById("addInfo")
+    };
+    // 获取到用户昵称
+    var nickName = prompt('昵称',"xxx");
+    // 好友数组
+    var friendsList=[];
+    // 我的用户名
+    var userName;
+    // 用于监听第几次发过来mes.friends，如果是第一次就在好友框加上所有好友否则只加上新增加的好友
+    var count = 0;
+    var socket = io.connect("/");
+    if(nickName){
+      window.sessionStorage.setItem('nickName',nickName);
+    }else {
+      window.sessionStorage.setItem('nickName',"NULL");
+    }
+    userName = window.sessionStorage.getItem("nickName");
+    socket.send(userName);
+    //点击发送键
+    document.getElementsByTagName("button")[1].onclick = write;
+    // 点击退出键
+    document.getElementsByTagName("button")[0].onclick = function(){
+      var signOut = confirm("退出聊天室吗?");
+      if(signOut) {
+        console.log('要退出了');
+        socket.send({'out':userName});
+        ele.oContainer.style.cssText = "height: 0;overflow: hidden";
+        window.sessionStorage.removeItem('user');
+      }
+    }
+    // 卸载页面退出聊天
+    window.onbeforeunload = function(){
+      socket.send({'out':userName});
+    }
+    // 回车发送消息
+    document.addEventListener('keyup',function(e){
+      e = e||window.e;
+      if(e.keyCode == '13'){
+        write();
+      }
+    })
+    //将消息发送到后台
+    function write(){
+      var content = ele.oSendTxt.value;
+      // 消息为空不发送
+      if(!content){
+        return;
+      }else {
+        ele.oSendTxt.value="";
+        socket.send({"user":userName,"msg":content});
+      }
+    }
+
+
+    // 如果监听到socket消息，那么执行这个方法并且广播消息
+    socket.on("message",function(mes){
+      count++;
+      console.log(mes);
+      console.log(mes.user);
+      console.log(mes.msg);
+      if(mes.friends){
+        if(mes.out) {
+          var aFriendLists = ele.oFriendList.getElementsByTagName("li");
+          console.log(aFriendLists);
+          ele.aFriends.innerHTML = mes.out+"退出群聊";
+          friendsList = JSON.parse(window.sessionStorage.getItem('friendsList'));
+          console.log(friendsList);
+          var key = friendsList.indexOf(mes.out);
+          console.log(key);
+          ele.oFriendList.removeChild(aFriendLists[key]);
+          // 更新好友信息
+          window.sessionStorage.setItem("friendsList",JSON.stringify(mes.friends));
+        }else if(mes.add) {
+          console.log(count);
+          // var friStr = mes.friends.join(',');
+          var addFri = mes.add;
+          if(addFri==userName) {
+            ele.aFriends.innerHTML = "'我'"+"加入聊天室";
+          }else {
+            ele.aFriends.innerHTML = '"'+addFri+'"'+"加入聊天室";
+          }
+          // 保存好友信息
+          window.sessionStorage.setItem('friendsList',JSON.stringify(mes.friends));
+          ele.oFriendList_num.innerHTML = mes.friends.length;
+
+          if(count==1){
+            // 用户加入
+            var frag = document.createDocumentFragment();
+            for(var i=0,len=mes.friends.length;i<len;i++) {
+              var item = document.createElement('li');
+              item.innerHTML = "<em></em><span>"+mes.friends[i]+"</span>";
+              frag.appendChild(item);
+            }
+            ele.oFriendList.appendChild(frag);
+          }else {
+            var item = document.createElement('li');
+            item.innerHTML = "<em></em><span>"+mes.add+"</span>";
+            ele.oFriendList.appendChild(item);
+          }
+        }
+      }else {
+        // 接收消息
+        console.log("壕友："+mes.user);
+        console.log("我的："+userName);
+        if(mes.user==userName){
+          var item = document.createElement("div");
+          item.className = "right-div";
+          item.innerHTML = "<em class='photo right-photo'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
+          ele.oRecord.appendChild(item);
+        }else {
+          console.log('不是我');
+          var saying = document.createElement('div');
+          saying.innerHTML = "<em class='photo left-photo'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'>"+mes.msg+"</span>";
+          ele.oRecord.appendChild(saying);
+        }
+      }
+    })
+  })(window,document);
+  </script>
+</html>
