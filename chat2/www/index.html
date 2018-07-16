@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title></title>
+    <link rel="stylesheet" href="/index.css">
+  </head>
+  <body>
+    <p id="agin">刷新重来</p>
+    <div id="container">
+      <div id="head">
+        进来的都是真爱，发给好友试试吧
+      </div>
+      <div id="record-box">
+        <div id="addInfo">
+            qpq加入聊天室
+        </div>
+      </div>
+      <div id="friends-box">
+        <p>群成员 <span>10</span></p>
+        <ul id="friend-list">
+          <!-- <li><em></em><span>sjkcnb</span></li> -->
+        </ul>
+      </div>
+      <div id="send-box">
+        <div class="function">
+          表情功能，尽情期待……
+          <div class="look">
+            <!-- <img src="img/Smile.png" alt="smile" width="100%"> -->
+          </div>
+        </div>
+        <textarea rows="8" cols="80"></textarea>
+        <div class="btn">
+          <button type="button" name="close">关闭</button>
+          <button type="button" name="send">发送</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.bootcss.com/socket.io/2.1.1/socket.io.js"></script>
+  <script src="index.js"></script>
+  </script>
+</html>
