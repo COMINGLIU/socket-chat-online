@@ -23,12 +23,13 @@
   function Chat(){
     // 获取用户昵称
     this.getNickName();
+    // 接收广播消息
+    this.receiveMessage();
+
     // 发送消息
     this.sendMessage();
     // 退出聊天室
     this.out();
-    // 接收广播消息
-    this.receiveMessage();
   }
   Chat.prototype = {
     // 获取用户昵称
@@ -41,6 +42,31 @@
       }
       userName = window.sessionStorage.getItem("nickName");
       socket.send(userName);
+    },
+    // 上传头像
+    uploadHeadPhoto: function(){
+      var oFileInput = doc.getElementsByName("headP")[0];
+      var oHeadP = doc.getElementById("myHeadP");
+      if(oFileInput){
+        oFileInput.onchange = function(){
+          console.log(this.files.item(0));
+          var file = this.files[0];
+          var reader = new FileReader();
+          // 通过readAsDataURL读取图片
+          reader.readAsDataURL(file);
+          // readFile(this.files[0],oHeadP);
+          reader.onload = function(){
+            var data = {user:window.sessionStorage.getItem('nickName'),img: this.result};
+            socket.emit('sendImg',data);
+          }
+        };
+      }
+      function readFile(file,aimArea){
+        var blob = new Blob([file]);
+        var url = window.URL.createObjectURL(blob);
+        var img = new Image();
+        // aimArea.innerHTML = '<img src="'+url+'" width="100%">';
+      }
     },
     // 发送消息
     sendMessage: function(){
@@ -65,6 +91,7 @@
         }
       }
     },
+    // 退出聊天室
     out: function() {
       // 点击退出按钮
       document.getElementsByTagName("button")[0].onclick = function(){
@@ -117,14 +144,15 @@
               for(var i=0,len=mes.friends.length;i<len;i++) {
                 var item = document.createElement('li');
                 if(mes.friends[i]==userName) {
-                    item.innerHTML = "<em></em><span class='redColor'>"+mes.friends[i]+"</span>";
+                    item.innerHTML = "<em id='myHeadP'></em><span class='redColor'>"+mes.friends[i]+"</span><i>上传头像<input type='file' name='headP' value='上传头像'></i>";
                 }else {
                     item.innerHTML = "<em></em><span>"+mes.friends[i]+"</span>";
                 }
-
                 frag.appendChild(item);
               }
               ele.oFriendList.appendChild(frag);
+              // 在这实现上传头像功能
+              Chat.prototype.uploadHeadPhoto();
             }else {
               var item = document.createElement('li');
               item.innerHTML = "<em></em><span>"+mes.add+"</span>";
@@ -135,8 +163,13 @@
           // 接收消息
           if(mes.user==userName){
             var item = document.createElement("div");
+            var myHeadPhoto = window.sessionStorage.getItem('myHeadPhoto');
             item.className = "right-div";
-            item.innerHTML = "<em class='photo right-photo'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
+            if(myHeadPhoto){
+              item.innerHTML = "<em class='photo right-photo'><img src='"+myHeadPhoto+"' width='100%'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
+            }else {
+              item.innerHTML = "<em class='photo right-photo'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
+            }
             ele.oRecord.appendChild(item);
           }else {
             console.log('不是我');
@@ -145,6 +178,13 @@
             ele.oRecord.appendChild(saying);
           }
         }
+      })
+      socket.on('receiveImg',function(data){
+        var oHeadP = doc.getElementById("myHeadP");
+        console.log('收到');
+        console.log(data.img);
+        window.sessionStorage.setItem('myHeadPhoto',data.img);
+        oHeadP.innerHTML = '<img src="'+data.img+'" width="100%">';
       })
     }
   }

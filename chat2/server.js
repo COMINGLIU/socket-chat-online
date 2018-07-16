@@ -50,5 +50,9 @@ io.on("connection",function(socket){
         io.emit("message",mes);
     }
   });
+  socket.on('sendImg',function(data){
+    console.log(data);
+    io.emit('receiveImg',data);
+  })
 })
 server.listen(8080);

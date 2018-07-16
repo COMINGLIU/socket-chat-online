@@ -58,6 +58,7 @@ ul#friend-list li:hover {
   background-color: rgb(217,222,239);
 }
 ul#friend-list li em {
+  overflow: hidden;
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -70,6 +71,27 @@ ul#friend-list li span {
   vertical-align: middle;
   line-height: 28px;
   text-indent: 5px;
+}
+ul#friend-list li i {
+  position: absolute;
+  right: 0;
+  width: 60px;
+  overflow: hidden;
+  -webkit-text-size-adjust: none;
+  font-size: 8px;
+  font-style: normal;
+  color: #ccc;
+  line-height: 28px;
+}
+ul#friend-list li i:hover {
+  text-decoration: underline;
+}
+ul#friend-list li input {
+  position: absolute;
+  left: 0;
+  width: 60px;
+  opacity: 0;
+  cursor: pointer;
 }
 /* 发送框 */
 #send-box {
@@ -188,6 +210,7 @@ ul#friend-list li span {
   height: 30px;
   background-color: #ccc;
   border-radius: 50%;
+  overflow: hidden;
 }
 #record-box span.name {
   display: block;
