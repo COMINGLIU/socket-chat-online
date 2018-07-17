@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      #drag{
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="drag">
+
+    </div>
+  </body>
+  <script type="text/javascript">
+    (function(document){
+      var doc = document;
+      drag();
+      function drag(){
+        var diffX,diffY;
+        var dragging = null;
+        var drager = doc.getElementById('drag');
+        console.log(drager);
+        // drager.addEventListener('mousedown',dragEvent);
+        // drager.addEventListener('mousemove',dragEvent);
+        // drager.addEventListener('mouseup',dragEvent);
+        drager.addEventListener('mousedown',dragEvent);
+        drager.addEventListener('mousemove',dragEvent);
+        document.addEventListener('mouseup',dragEvent);
+
+        function dragEvent(e){
+
+          e = e||window.e;
+          var target = e.target||e.srcElement;
+          switch(e.type){
+            case 'mousedown':
+              if(target.id=="drag"){
+                dragging = target;
+                diffX = e.clientX-dragging.offsetLeft;
+                diffY = e.clientY-dragging.offsetTop;
+              }
+              break;
+            case 'mousemove':
+              if(dragging!=null){
+                dragging.style.left = (e.clientX-diffX)+"px";
+                dragging.style.top = (e.clientY-diffY)+"px";
+              }
+              break;
+            case 'mouseup':
+              dragging=null;
+              break;
+          }
+        }
+      }
+
+    })(document);
+  </script>
+</html>

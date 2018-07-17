@@ -25,7 +25,6 @@
     this.getNickName();
     // 接收广播消息
     this.receiveMessage();
-
     // 发送消息
     this.sendMessage();
     // 退出聊天室
@@ -41,6 +40,7 @@
         window.sessionStorage.setItem('nickName',"NULL");
       }
       userName = window.sessionStorage.getItem("nickName");
+      console.log('myName:'+userName);
       socket.send(userName);
     },
     // 上传头像
@@ -87,7 +87,7 @@
           return;
         }else {
           ele.oSendTxt.value="";
-          socket.send({"user":userName,"msg":content});
+          socket.send({"user":userName,"msg":content,"headPhoto":window.sessionStorage.getItem("myHeadPhoto")});
         }
       }
     },
@@ -110,6 +110,7 @@
     },
     // 接收消息
     receiveMessage: function(){
+      var oChatRecordBox = doc.getElementById("record-box");
       // 如果监听到socket消息，那么执行这个方法并且广播消息
       socket.on("message",function(mes){
         count++;
@@ -165,16 +166,22 @@
             var item = document.createElement("div");
             var myHeadPhoto = window.sessionStorage.getItem('myHeadPhoto');
             item.className = "right-div";
-            if(myHeadPhoto){
-              item.innerHTML = "<em class='photo right-photo'><img src='"+myHeadPhoto+"' width='100%'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
+            if(mes.headPhoto){
+              item.innerHTML = "<em class='photo right-photo'><img src='"+mes.headPhoto+"' width='100%'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
             }else {
               item.innerHTML = "<em class='photo right-photo'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
             }
             ele.oRecord.appendChild(item);
+            // 保持滚动条始终在底部
+            oChatRecordBox.scrollTop = oChatRecordBox.scrollHeight;
           }else {
             console.log('不是我');
             var saying = document.createElement('div');
-            saying.innerHTML = "<em class='photo left-photo'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'>"+mes.msg+"</span>";
+            if(mes.headPhoto){
+              saying.innerHTML = "<em class='photo left-photo'><img src='"+mes.headPhoto+"' width='100%'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'>"+mes.msg+"</span>";
+            }else {
+              saying.innerHTML = "<em class='photo left-photo'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'>"+mes.msg+"</span>";
+            }
             ele.oRecord.appendChild(saying);
           }
         }
@@ -182,9 +189,20 @@
       socket.on('receiveImg',function(data){
         var oHeadP = doc.getElementById("myHeadP");
         console.log('收到');
-        console.log(data.img);
-        window.sessionStorage.setItem('myHeadPhoto',data.img);
-        oHeadP.innerHTML = '<img src="'+data.img+'" width="100%">';
+        // console.log(data.img);
+        console.log(data);
+        if(data.user==userName){
+          // 我的头像
+          window.sessionStorage.setItem('myHeadPhoto',data.img);
+          oHeadP.innerHTML = '<img src="'+data.img+'" width="100%">';
+        }else {
+          // 别人的头像
+          console.log(JSON.parse(window.sessionStorage.getItem("friendsList")).indexOf(data.user));
+          var key = JSON.parse(window.sessionStorage.getItem("friendsList")).indexOf(data.user);
+          var aHeadP = doc.querySelectorAll("#friend-list li em");
+          console.log(aHeadP);
+          aHeadP[key].innerHTML = '<img src="'+data.img+'" width="100%">';
+        }
       })
     }
   }
