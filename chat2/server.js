@@ -36,7 +36,10 @@ io.on("connection",function(socket){
   socket.on("message",function(mes){
     console.log(mes);
     // 向所有的客户端广播消息
-    if(mes.msg==undefined){
+    if(mes.msg!=undefined||mes.imgUrl!=undefined) {
+      console.log(mes);
+      io.emit("message",mes);
+    }else {
       if(mes.out) {
         friends.splice(friends.indexOf(mes.out),1);
         io.emit("message",{"friends":friends,"out":mes.out});
@@ -45,14 +48,15 @@ io.on("connection",function(socket){
         console.log("friends"+friends);
         io.emit("message",{"friends":friends,"add":mes});
       }
-    }else {
-        console.log(mes);
-        io.emit("message",mes);
     }
+
   });
   socket.on('sendImg',function(data){
     console.log(data);
     io.emit('receiveImg',data);
   })
+  // socket.on('sendEmotion',function(data){
+  //
+  // })
 })
 server.listen(8080);

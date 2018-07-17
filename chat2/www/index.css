@@ -116,6 +116,7 @@ ul#friend-list li input {
   resize: none;
 }
 #send-box .function {
+  position: relative;
   width: 100%;
   height: 25%;
   font-size: 10px;
@@ -132,6 +133,19 @@ ul#friend-list li input {
 }
 .function .look:hover {
   background-color: rgb(213,219,235);
+}
+/* 表情包 */
+ul#emotion {
+  display: flex;
+  max-width: 350px;
+}
+ul#emotion li {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+ul#emotion li:hover {
+  background-color: #ccc;
 }
 #send-box button {
   width: 70px;

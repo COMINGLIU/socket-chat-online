@@ -29,6 +29,8 @@
     this.sendMessage();
     // 退出聊天室
     this.out();
+    // 发送表情包
+    this.sendEmotion();
   }
   Chat.prototype = {
     // 获取用户昵称
@@ -89,6 +91,19 @@
           ele.oSendTxt.value="";
           socket.send({"user":userName,"msg":content,"headPhoto":window.sessionStorage.getItem("myHeadPhoto")});
         }
+      }
+    },
+    // 发送表情包
+    sendEmotion: function(){
+      var oEmotionUl = doc.getElementById("emotion"),
+          oEmotionLi = oEmotionUl.getElementsByTagName("li"),
+          oEmotionImg = oEmotionUl.getElementsByTagName("img");
+      for(var i=0,len=oEmotionLi.length;i<len;i++) {
+        (function(i){
+          oEmotionLi[i].onclick = function(){
+            socket.send({"user":userName,"imgUrl":oEmotionImg[i].src,"headPhoto":window.sessionStorage.getItem("myHeadPhoto")});
+          }
+        })(i)
       }
     },
     // 退出聊天室
@@ -166,8 +181,13 @@
             var item = document.createElement("div");
             var myHeadPhoto = window.sessionStorage.getItem('myHeadPhoto');
             item.className = "right-div";
-            if(mes.headPhoto){
+            if(mes.headPhoto&&mes.msg){
               item.innerHTML = "<em class='photo right-photo'><img src='"+mes.headPhoto+"' width='100%'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
+            }else if(mes.imgUrl&&mes.headPhoto==undefined){
+              console.log('表情包');
+              item.innerHTML = "<em class='photo right-photo'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'><img src='"+mes.imgUrl+"'></span>";
+            }else if(mes.headPhoto!=undefined&&mes.imgUrl!=undefined) {
+              item.innerHTML = "<em class='photo right-photo'><img src='"+mes.headPhoto+"' width='100%'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'><img src='"+mes.imgUrl+"'></span>";
             }else {
               item.innerHTML = "<em class='photo right-photo'></em><span class='name right-name'>"+userName+"</span><span class='say right-say'>"+mes.msg+"</span>";
             }
@@ -177,8 +197,12 @@
           }else {
             console.log('不是我');
             var saying = document.createElement('div');
-            if(mes.headPhoto){
+            if(mes.headPhoto&&mes.msg){
               saying.innerHTML = "<em class='photo left-photo'><img src='"+mes.headPhoto+"' width='100%'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'>"+mes.msg+"</span>";
+            }else if(mes.imgUrl&&mes.headPhoto==undefined){
+              saying.innerHTML = "<em class='photo left-photo'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'><img src='"+mes.imgUrl+"'></span>";
+            }else if(mes.imgUrl&&mes.headPhoto!=undefined){
+              saying.innerHTML = "<em class='photo left-photo'><img src='"+mes.headPhoto+"' width='100%'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'><img src='"+mes.imgUrl+"'></span>";
             }else {
               saying.innerHTML = "<em class='photo left-photo'></em><span class='name left-name'>"+mes.user+"</span><span class='say left-say'>"+mes.msg+"</span>";
             }
