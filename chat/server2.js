@@ -1,13 +1,12 @@
-const http = require("http");
+const express = require('express');
+const static = require('express-static');
 const fs = require('fs');
 const ws = require("socket.io");
 
+const server = express();
+server.listen(8080);
+
 let friends = [];
-const server = http.createServer(function(req,res){
-  // 读取文件，发送到前端
-  const html = fs.readFileSync('./www/index.html');
-  res.write(html);
-});
 // 基于当前web服务开启socket实例
 const io=ws(server);
 // 检测连接事件
@@ -33,4 +32,5 @@ io.on("connection",function(socket){
     }
   });
 })
+server.use(static('./www'));
 server.listen(8080);
