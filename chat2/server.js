@@ -55,6 +55,20 @@ io.on("connection",function(socket){
     console.log(data);
     io.emit('receiveImg',data);
   })
+  socket.on('sendFile',function(data){
+    console.log(data);
+    // io.emit('receiveFile',data);
+    if(data.type =="image/jpeg"||data.type == "image/png") {
+      io.emit('message',{
+        user: data.user,
+        headPhoto: data.headP,
+        imgUrl: data.file
+      })
+    }else {
+      io.emit('receiveFile',data);
+    }
+
+  })
   // socket.on('sendEmotion',function(data){
   //
   // })

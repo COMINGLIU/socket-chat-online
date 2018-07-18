@@ -15,22 +15,31 @@
   };
   // 好友数组
   var friendsList=[];
+  // 文件数组
+  var fileList=[]
   // 我的用户名
   var userName;
   // 用于监听第几次发过来mes.friends，如果是第一次就在好友框加上所有好友否则只加上新增加的好友
   var count = 0;
+  var count_file = 0;
   var socket = io.connect("/");
   function Chat(){
     // 获取用户昵称
     this.getNickName();
-    // 接收广播消息
-    this.receiveMessage();
     // 发送消息
     this.sendMessage();
-    // 退出聊天室
-    this.out();
+    // 接收文字消息
+    this.receiveMessage();
+    //接收头像信息
+    this.receiveImg();
     // 发送表情包
     this.sendEmotion();
+    // 发送与接收文件
+    this.sendFile();
+    // 接收文件
+    this.receiveFile();
+    // 退出聊天室
+    this.out();
   }
   Chat.prototype = {
     // 获取用户昵称
@@ -70,6 +79,65 @@
         // aimArea.innerHTML = '<img src="'+url+'" width="100%">';
       }
     },
+    // 接收头像
+    receiveImg:function(){
+      socket.on('receiveImg',function(data){
+        var oHeadP = doc.getElementById("myHeadP");
+        console.log('收到');
+        // console.log(data.img);
+        console.log(data);
+        if(data.user==userName){
+          // 我的头像
+          window.sessionStorage.setItem('myHeadPhoto',data.img);
+          oHeadP.innerHTML = '<img src="'+data.img+'" width="100%">';
+        }else {
+          // 别人的头像
+          console.log(JSON.parse(window.sessionStorage.getItem("friendsList")).indexOf(data.user));
+          var key = JSON.parse(window.sessionStorage.getItem("friendsList")).indexOf(data.user);
+          var aHeadP = doc.querySelectorAll("#friend-list li em");
+          console.log(aHeadP);
+          aHeadP[key].innerHTML = '<img src="'+data.img+'" width="100%">';
+        }
+      })
+    },
+    // 发送文件
+    sendFile: function(){
+      var upFileBtn = doc.getElementsByName("upFile")[0];
+      var file_type=[]
+      upFileBtn.onchange = function(){
+        // console.log(this.files);
+        console.log(this.files[0]);
+        var file = this.files[0];
+        var reader = new FileReader();
+        if(file.type == "image/jpeg"||"image/png"){
+          reader.readAsDataURL(file);
+        }else {
+            reader.readAsText(file);
+        }
+        reader.onload = function(){
+          var data = {user: window.sessionStorage.getItem('nickName'),file:this.result,name:file.name,type:file.type,size:file.size,headP:window.sessionStorage.getItem('myHeadPhoto')};
+          socket.emit('sendFile',data);
+        }
+      }
+    },
+    // 接收文件
+    receiveFile: function() {
+      socket.on('receiveFile',function(data){
+        console.log(data);
+        // 将文件数据保存在数组里
+        // fileList.push(data);
+        // 将文件数据用session缓存
+        // window.sessionStorage('fileList',JSON.stringify(data));
+        var oFileUl = doc.getElementById("file-list");
+        var item = doc.createElement("li");
+        if(data.type="text/plain") {
+          item.innerHTML = "<a href='"+data.file+"' download='"+data.name+"'>"+data.name.split('.')[0]+"</a><span>"+data.name.split('.')[1]+"</span>";
+        }else {
+          item.innerHTML = "<a href='"+data.file+"'>"+data.name.split('.')[0]+"</a><span>"+data.name.split('.')[1]+"</span>"
+        }
+        oFileUl.appendChild(item);
+      })
+    },
     // 发送消息
     sendMessage: function(){
       //点击发送键
@@ -106,6 +174,7 @@
         })(i)
       }
     },
+
     // 退出聊天室
     out: function() {
       // 点击退出按钮
@@ -160,7 +229,7 @@
               for(var i=0,len=mes.friends.length;i<len;i++) {
                 var item = document.createElement('li');
                 if(mes.friends[i]==userName) {
-                    item.innerHTML = "<em id='myHeadP'></em><span class='redColor'>"+mes.friends[i]+"</span><i>上传头像<input type='file' name='headP' value='上传头像'></i>";
+                    item.innerHTML = "<em id='myHeadP'></em><span class='redColor'>"+mes.friends[i]+"</span><i>上传头像<input type='file' accept='image/png,image/gif' name='headP' value='上传头像'></i>";
                 }else {
                     item.innerHTML = "<em></em><span>"+mes.friends[i]+"</span>";
                 }
@@ -210,25 +279,8 @@
           }
         }
       })
-      socket.on('receiveImg',function(data){
-        var oHeadP = doc.getElementById("myHeadP");
-        console.log('收到');
-        // console.log(data.img);
-        console.log(data);
-        if(data.user==userName){
-          // 我的头像
-          window.sessionStorage.setItem('myHeadPhoto',data.img);
-          oHeadP.innerHTML = '<img src="'+data.img+'" width="100%">';
-        }else {
-          // 别人的头像
-          console.log(JSON.parse(window.sessionStorage.getItem("friendsList")).indexOf(data.user));
-          var key = JSON.parse(window.sessionStorage.getItem("friendsList")).indexOf(data.user);
-          var aHeadP = doc.querySelectorAll("#friend-list li em");
-          console.log(aHeadP);
-          aHeadP[key].innerHTML = '<img src="'+data.img+'" width="100%">';
-        }
-      })
-    }
-  }
+    },
+
+  };
   var char = new Chat();
 })(window,document);
